@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>offline-leaflet-map-ID43</title>
+<link rel="stylesheet" href="./leaflet/leaflet.css"/>
+<script src="./leaflet/leaflet.js"></script>
+<style>
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}
+#my-offline-leaflet-map{width:100%;height:100%;}</style>
+</style>
+</head><body>
+<div id="my-offline-leaflet-map"></div>
+<script>
+var mymap=L.map('my-offline-leaflet-map',{minZoom:3,maxZoom:9}).setView([21, -79.5], 3);
+L.TileLayer.Custom = L.TileLayer.extend({getTileUrl : function(coords){
+url='./ArcGIS Online Imagery/'+coords.z+'/'+coords.x+'/'+coords.y+'.jpg';
+return url;}});
+L.tileLayer.Custom = function(){return new L.TileLayer.Custom();}
+L.tileLayer.Custom().addTo(mymap);
+</script>
+</body></html>
