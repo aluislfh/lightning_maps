@@ -9,10 +9,10 @@ html, body, #map {
 /* Contenedor para la barra de color */
 #colorbars-container {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  top: 50%; /* Ocupa desde la mitad hasta el borde inferior */
-  width: 40px; /* Ancho ajustado a la imagen */
+  right: -5px;
+  bottom: 95px;
+  top: 75%; /* Ocupa desde la mitad hasta el borde inferior */
+  width: 60px; /* Ancho ajustado a la imagen */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,4 +21,21 @@ html, body, #map {
 #colorbars-container img {
   width: 100%;
   object-fit: contain;
+}
+
+
+/* Estilo para el div de información de valores en tiempo real */
+#infoWindow {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  display: none;
 }

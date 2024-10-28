@@ -1,11 +1,12 @@
 // src_js/app.js
 
-// Inicializar el mapa en el área de Cuba con un zoom inicial de 5
+// Inicializar el mapa en el área de Cuba con un zoom inicial de 7
 const map = L.map('map', {
   center: [21.25439875782822, -79.52396797010076], // Coordenadas centradas en Cuba
-  zoom: 5,
+  zoom: 7,
   minZoom: 5,
   maxZoom: 10,
+  maxBoundsViscosity: 1.0,
   zoomControl: false, // Desactivar el control de zoom predeterminado
   maxBounds: [[12, -93], [30, -66]] // Limitar el área visible
 });
@@ -37,9 +38,13 @@ L.control.locate({
   }
 }).addTo(map);
 
-// Capa base desde caché local, activada por defecto
-const arcGISLayer = L.tileLayer('./cache/ArcGIS Online Imagery/{z}/{x}/{y}.png', {
-  attribution: '&copy; ArcGIS Imagery'
+// Capa base desde caché local (ArcGIS) activada por defecto
+const arcGISLayer = L.tileLayer('./cache/ArcGIS_Online_Imagery/{z}/{x}/{y}.jpg', {
+  minZoom: 5, maxZoom: 9, maxNativeZoom: 10,
+  center: [21.25439875782822, -79.52396797010076],
+  maxBounds: [[12, -93], [30, -66]],
+  zIndex: 1,
+  attribution: 'ArcGIS Imagery'
 }).addTo(map);
 
 // Capas adicionales
@@ -72,10 +77,8 @@ const colorBarContainer = document.getElementById('colorbars-container');
 
 // Función para actualizar la barra de color según la capa seleccionada
 function updateColorBar(selectedLayer) {
-  // Ocultar todas las imágenes primero
   colorBarContainer.innerHTML = '';
 
-  // Mostrar la imagen correspondiente a la capa activa
   let imgSrc = '';
   if (selectedLayer === 'TD Corregido') {
     imgSrc = './images/TD_corregido_colorbar.png';
@@ -93,12 +96,82 @@ function updateColorBar(selectedLayer) {
   }
 }
 
+// Control de selección exclusiva de capas
+function toggleLayer(layer) {
+  map.eachLayer(function (existingLayer) {
+    if (existingLayer !== arcGISLayer && existingLayer !== layer) {
+      map.removeLayer(existingLayer);
+    }
+  });
+  if (!map.hasLayer(layer)) {
+    map.addLayer(layer);
+  }
+}
+
+// Añadir la capa TD por defecto y su barra de colores
+toggleLayer(TD_corregido_tiles);
+updateColorBar('TD Corregido');
+
+// Agregar control de coordenadas del ratón
+L.control.mouseCoordinates({ position: 'bottomleft' }).addTo(map);
+
 // Event listener para el cambio de capas
 map.on('overlayadd', function (event) {
   updateColorBar(event.name);
+  toggleLayer(overlayMaps[event.name]);
 });
 
-// Event listener para cuando se elimina una capa
-map.on('overlayremove', function () {
-  colorBarContainer.innerHTML = ''; // Ocultar barra de colores cuando no hay capas activas
-});
+
+
+
+
+//============================================================================
+
+// Divisiones paises
+
+function style1(feature) {
+  return {
+      color: 'black',
+      weight: 1,
+      fillColor: 'none',
+      fillOpacity: 0
+  };
+}
+
+function style2(feature) {
+  return {
+      color: 'gray',
+      weight: 1,
+      fillColor: 'none',
+      fillOpacity: 0
+  };
+}
+
+fetch('./geo/stanford-np147sx1056-geojson.json')
+  .then(function (response) {
+      return response.json();
+  })
+  .then(function (data) {
+      geojsonLayer = L.geoJson(data, { style: style1 }); // Aplica style1 o style2
+
+      // Agregar la capa GeoJSON al control de capas
+      layerControl.addOverlay(geojsonLayer, "Provincias").addTo(map);
+  })
+  .catch(function (error) {
+      console.error('Error al cargar el archivo GeoJSON:', error);
+  });
+
+fetch('./geo/stanford-mw786vp6120-geojson.json')
+  .then(function (response) {
+      return response.json();
+  })
+  .then(function (data) {
+      geojsonLayer = L.geoJson(data, { style: style2 }); // Aplica style1 o style2
+
+      // Agregar la capa GeoJSON al control de capas
+      layerControl.addOverlay(geojsonLayer, "Municipios").addTo(map);
+  })
+  .catch(function (error) {
+      console.error('Error al cargar el archivo GeoJSON:', error);
+  });
+
