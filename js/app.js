@@ -91,7 +91,7 @@ function style1(feature) {
 function style2(feature) {
   return {
       color: 'gray-dark',
-      weight: 2,
+      weight: 1,
       fillColor: 'none',
       fillOpacity: 0
   };
@@ -102,8 +102,8 @@ fetch('./geo/stanford-np147sx1056-geojson.json')
   .then(function (response) {
       return response.json();
   })
-  .then(function (data) {
-      const provinciasLayer = L.geoJson(data, { style: style2 });
+  .then(function (data1) {
+      const provinciasLayer = L.geoJson(data1, { style: style1 });
 
       // Agregar la capa GeoJSON de provincias al control de capas y al mapa
       layerControl.addOverlay(provinciasLayer, "Provincias");
@@ -118,8 +118,8 @@ fetch('./geo/stanford-mw786vp6120-geojson.json')
   .then(function (response) {
       return response.json();
   })
-  .then(function (data) {
-      const municipiosLayer = L.geoJson(data, { style: style1 });
+  .then(function (data2) {
+      const municipiosLayer = L.geoJson(data2, { style: style2 });
 
       // Agregar la capa GeoJSON de municipios al control de capas y al mapa
       layerControl.addOverlay(municipiosLayer, "Municipios");
