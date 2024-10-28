@@ -47,30 +47,27 @@ const arcGISLayer = L.tileLayer('./cache/ArcGIS_Online_Imagery/{z}/{x}/{y}.jpg',
   attribution: 'ArcGIS Imagery'
 }).addTo(map);
 
-// Capas adicionales
+// Capas adicionales como capas base para que se comporten como botones radio
 const TD_corregido_tiles = L.tileLayer('./data/TD_corregido_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', {
-  tms: true, opacity: 0.7, maxZoom: 10
+  tms: true, opacity: 0.8, maxZoom: 10
 });
 const Ng_tiles = L.tileLayer('./data/Ng_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', { 
-  tms: true, opacity: 0.7, maxZoom: 10 
+  tms: true, opacity: 0.8, maxZoom: 10 
 });
 const N_corregido_tiles = L.tileLayer('./data/N_corregido-1_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', {
-  tms: true, opacity: 0.7, maxZoom: 10 
+  tms: true, opacity: 0.8, maxZoom: 10 
 });
 
-// Control de capas base y capas adicionales
+// Control de capas base y capas exclusivas como botones radio
 const baseMaps = {
-  "ArcGIS Imagery": arcGISLayer
-};
-
-const overlayMaps = {
+  // "ArcGIS Imagery": arcGISLayer,
   "TD Corregido": TD_corregido_tiles,
   "Ng Clipped": Ng_tiles,
   "N Corregido-1": N_corregido_tiles
 };
 
-// Añadir control de capas en la esquina superior izquierda
-const layerControl = L.control.layers(baseMaps, overlayMaps, { position: 'topleft', collapsed: false }).addTo(map);
+// Añadir control de capas en la esquina superior izquierda como radio buttons
+const layerControl = L.control.layers(baseMaps, {}, { position: 'topleft', collapsed: false }).addTo(map);
 
 // Seleccionar el contenedor de las barras de color
 const colorBarContainer = document.getElementById('colorbars-container');
@@ -96,31 +93,14 @@ function updateColorBar(selectedLayer) {
   }
 }
 
-// Control de selección exclusiva de capas
-function toggleLayer(layer) {
-  map.eachLayer(function (existingLayer) {
-    if (existingLayer !== arcGISLayer && existingLayer !== layer) {
-      map.removeLayer(existingLayer);
-    }
-  });
-  if (!map.hasLayer(layer)) {
-    map.addLayer(layer);
-  }
-}
-
-// Añadir la capa TD por defecto y su barra de colores
-toggleLayer(TD_corregido_tiles);
+// Inicializa la capa y la barra de color por defecto
 updateColorBar('TD Corregido');
+TD_corregido_tiles.addTo(map); // Añadir capa inicial por defecto
 
-// Agregar control de coordenadas del ratón
-L.control.mouseCoordinates({ position: 'bottomleft' }).addTo(map);
-
-// Event listener para el cambio de capas
-map.on('overlayadd', function (event) {
+// Escucha el cambio de capa base para actualizar la barra de color y la capa activa
+map.on('baselayerchange', function(event) {
   updateColorBar(event.name);
-  toggleLayer(overlayMaps[event.name]);
 });
-
 
 
 
@@ -152,21 +132,22 @@ fetch('./geo/stanford-np147sx1056-geojson.json')
       return response.json();
   })
   .then(function (data) {
-      geojsonLayer = L.geoJson(data, { style: style1 }); // Aplica style1 o style2
+      geojsonLayer = L.geoJson(data, { style: style });
 
       // Agregar la capa GeoJSON al control de capas
-      layerControl.addOverlay(geojsonLayer, "Provincias").addTo(map);
+      layerControl.addOverlay(geojsonLayer, "Provincias)").addTo(map);
   })
   .catch(function (error) {
       console.error('Error al cargar el archivo GeoJSON:', error);
   });
+
 
 fetch('./geo/stanford-mw786vp6120-geojson.json')
   .then(function (response) {
       return response.json();
   })
   .then(function (data) {
-      geojsonLayer = L.geoJson(data, { style: style2 }); // Aplica style1 o style2
+      geojsonLayer = L.geoJson(data, { style: style });
 
       // Agregar la capa GeoJSON al control de capas
       layerControl.addOverlay(geojsonLayer, "Municipios").addTo(map);

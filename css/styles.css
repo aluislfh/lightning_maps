@@ -16,6 +16,7 @@ html, body, #map {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 #colorbars-container img {
@@ -31,7 +32,7 @@ html, body, #map {
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(1.0, 1.0, 1.0, 0.7);
   color: white;
   padding: 5px;
   border-radius: 5px;
