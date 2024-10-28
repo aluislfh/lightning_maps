@@ -13,10 +13,38 @@
   <link rel="stylesheet" href="./css/leaflet.draw.css" />
   <link rel="stylesheet" href="./css/L.Control.Locate.min.css" />
   <link rel="stylesheet" href="./css/styles.css" />
+
+  <style>
+    @import "./css/leaflet.control.mouse-coordinates.less";
+
+    #infoWindow {
+        position: fixed; /* Cambiado de absolute a fixed */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centra la ventana */
+        width: 35%; /* Ajusta el ancho como desees */
+        height: 50%; /* Ajusta la altura como desees */
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        display: none; /* Asegúrate de que esté oculta inicialmente */
+        overflow: auto; /* Añadir scroll si el contenido es muy largo */
+    }
+  
+</style>
+
 </head>
 <body>
   <!-- Map container -->
   <div id="map"></div>
+
+  <!-- Contenedor para las imágenes de barras de colores -->
+  <div id="colorbars-container">
+    <img src="./images/TD_corregido_colorbar.png" alt="TD Corregido Colorbar" />
+    <img src="./images/Ng_colorbar.png" alt="Ng Colorbar" />
+    <img src="./images/N_corregido-1_colorbar.png" alt="N Corregido-1 Colorbar" />
+  </div>
 
   <!-- Offline Leaflet JS and other plugins -->
   <script src="./js/leaflet.js"></script>
@@ -30,4 +58,5 @@
   <!-- Custom JS -->
   <script src="./js/app.js"></script>
 </body>
+
 </html>
