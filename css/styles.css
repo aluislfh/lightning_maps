@@ -40,3 +40,22 @@ html, body, #map {
   text-align: center;
   display: none;
 }
+
+/* Estilo para el control de coordenadas del ratón en Leaflet */
+.leaflet-control-coordinates {
+  background-color: white; /* Fondo blanco */
+  color: black; /* Texto negro */
+  padding: 5px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 14px;
+  opacity: 0.9; /* Un poco de transparencia si lo deseas */
+}
+
+.leaflet-control-coordinates div {
+  color: black; /* Asegura que el texto interno sea negro */
+}
+
+.leaflet-control-coordinates span {
+  font-weight: bold; /* Opcional: poner en negrita las etiquetas lat y lon */
+}
+

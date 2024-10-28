@@ -11,59 +11,27 @@ const map = L.map('map', {
   maxBounds: [[12, -93], [30, -66]] // Limitar el área visible
 });
 
-// Añadir control de zoom en la esquina superior derecha
+// Añadir controles al mapa
 L.control.zoom({ position: 'topright' }).addTo(map);
-
-// Añadir control de pantalla completa
-L.control.fullscreen({
-  position: 'topright',
-  title: 'Pantalla completa',
-  titleCancel: 'Salir de pantalla completa'
-}).addTo(map);
-
-// Añadir control de escala en kilómetros en la esquina inferior izquierda
-L.control.scale({
-  metric: true,
-  imperial: false,
-  position: 'bottomleft'
-}).addTo(map);
-
-// Añadir control de ubicación (Locate) en la esquina superior derecha
-L.control.locate({
-  position: 'topright',
-  flyTo: true,
-  icon: 'fa fa-location-arrow',
-  strings: {
-    title: "Mostrar mi ubicación" // Texto del tooltip
-  }
-}).addTo(map);
+L.control.fullscreen({ position: 'topright', title: 'Pantalla completa', titleCancel: 'Salir de pantalla completa' }).addTo(map);
+L.control.scale({ metric: true, imperial: false, position: 'bottomleft' }).addTo(map);
+L.control.locate({ position: 'topright', flyTo: true, icon: 'fa fa-location-arrow', strings: { title: "Mostrar mi ubicación" } }).addTo(map);
 
 // Capa base desde caché local (ArcGIS) activada por defecto
 const arcGISLayer = L.tileLayer('./cache/ArcGIS_Online_Imagery/{z}/{x}/{y}.jpg', {
-  minZoom: 5, maxZoom: 9, maxNativeZoom: 10,
-  center: [21.25439875782822, -79.52396797010076],
-  maxBounds: [[12, -93], [30, -66]],
-  zIndex: 1,
+  minZoom: 5, maxZoom: 10, maxNativeZoom: 8,
   attribution: 'ArcGIS Imagery'
 }).addTo(map);
 
 // Capas adicionales como capas base para que se comporten como botones radio
-const TD_corregido_tiles = L.tileLayer('./data/TD_corregido_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', {
-  tms: true, opacity: 0.8, maxZoom: 10
-});
-const Ng_tiles = L.tileLayer('./data/Ng_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', { 
-  tms: true, opacity: 0.8, maxZoom: 10 
-});
-const N_corregido_tiles = L.tileLayer('./data/N_corregido-1_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', {
-  tms: true, opacity: 0.8, maxZoom: 10 
-});
+const TD_corregido_tiles = L.tileLayer('./data/TD_corregido_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', { tms: true, opacity: 0.8, maxZoom: 10 });
+const Ng_tiles = L.tileLayer('./data/Ng_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', { tms: true, opacity: 0.8, maxZoom: 10 });
+const N_corregido_tiles = L.tileLayer('./data/N_corregido-1_clipped_rgb_8bit_tiles/{z}/{x}/{y}.png', { tms: true, opacity: 0.8, maxZoom: 10 });
 
-// Control de capas base y capas exclusivas como botones radio
 const baseMaps = {
-  // "ArcGIS Imagery": arcGISLayer,
-  "TD Corregido": TD_corregido_tiles,
-  "Ng Clipped": Ng_tiles,
-  "N Corregido-1": N_corregido_tiles
+  "Números promedio de días con tormenta [año/km^2]": TD_corregido_tiles,
+  "Densidad promedio de descargas a tierra [año/km^2]": Ng_tiles,
+  "Densidad promedio de descargas eléctricas [año/km^2]": N_corregido_tiles
 };
 
 // Añadir control de capas en la esquina superior izquierda como radio buttons
@@ -77,11 +45,11 @@ function updateColorBar(selectedLayer) {
   colorBarContainer.innerHTML = '';
 
   let imgSrc = '';
-  if (selectedLayer === 'TD Corregido') {
+  if (selectedLayer === 'Números promedio de días con tormenta [año/km^2]') {
     imgSrc = './images/TD_corregido_colorbar.png';
-  } else if (selectedLayer === 'Ng Clipped') {
+  } else if (selectedLayer === 'Densidad promedio de descargas a tierra [año/km^2]') {
     imgSrc = './images/Ng_colorbar.png';
-  } else if (selectedLayer === 'N Corregido-1') {
+  } else if (selectedLayer === 'Densidad promedio de descargas eléctricas [año/km^2]') {
     imgSrc = './images/N_corregido-1_colorbar.png';
   }
 
@@ -94,8 +62,11 @@ function updateColorBar(selectedLayer) {
 }
 
 // Inicializa la capa y la barra de color por defecto
-updateColorBar('TD Corregido');
 TD_corregido_tiles.addTo(map); // Añadir capa inicial por defecto
+updateColorBar('Números promedio de días con tormenta [año/km^2]'); // Actualiza la barra de color inicial
+
+// Agregar control de coordenadas del ratón
+L.control.mouseCoordinates({ position: 'bottomleft' }).addTo(map);
 
 // Escucha el cambio de capa base para actualizar la barra de color y la capa activa
 map.on('baselayerchange', function(event) {
@@ -104,15 +75,14 @@ map.on('baselayerchange', function(event) {
 
 
 
-
 //============================================================================
 
-// Divisiones paises
+// Divisiones politicas administrativas
 
 function style1(feature) {
   return {
       color: 'black',
-      weight: 1,
+      weight: 3,
       fillColor: 'none',
       fillOpacity: 0
   };
@@ -127,32 +97,34 @@ function style2(feature) {
   };
 }
 
+// Cargar y agregar capa GeoJSON de provincias con style1
 fetch('./geo/stanford-np147sx1056-geojson.json')
   .then(function (response) {
       return response.json();
   })
   .then(function (data) {
-      geojsonLayer = L.geoJson(data, { style: style });
+      const provinciasLayer = L.geoJson(data, { style: style1 });
 
-      // Agregar la capa GeoJSON al control de capas
-      layerControl.addOverlay(geojsonLayer, "Provincias)").addTo(map);
+      // Agregar la capa GeoJSON de provincias al control de capas y al mapa
+      layerControl.addOverlay(provinciasLayer, "Provincias");
+      provinciasLayer.addTo(map);
   })
   .catch(function (error) {
-      console.error('Error al cargar el archivo GeoJSON:', error);
+      console.error('Error al cargar el archivo GeoJSON de provincias:', error);
   });
 
-
+// Cargar y agregar capa GeoJSON de municipios con style2
 fetch('./geo/stanford-mw786vp6120-geojson.json')
   .then(function (response) {
       return response.json();
   })
   .then(function (data) {
-      geojsonLayer = L.geoJson(data, { style: style });
+      const municipiosLayer = L.geoJson(data, { style: style2 });
 
-      // Agregar la capa GeoJSON al control de capas
-      layerControl.addOverlay(geojsonLayer, "Municipios").addTo(map);
+      // Agregar la capa GeoJSON de municipios al control de capas y al mapa
+      layerControl.addOverlay(municipiosLayer, "Municipios");
+      municipiosLayer.addTo(map);
   })
   .catch(function (error) {
-      console.error('Error al cargar el archivo GeoJSON:', error);
+      console.error('Error al cargar el archivo GeoJSON de municipios:', error);
   });
-
