@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Map</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <!-- Leaflet Sidebar V2 CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-sidebar-v2/css/leaflet-sidebar.min.css" />
+  <!-- Leaflet Fullscreen CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.0.2/Control.FullScreen.min.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Leaflet Sidebar -->
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <div class="leaflet-sidebar-tabs">
+      <!-- Estructura de la lista de tabs mejorada con roles y títulos accesibles -->
+      <ul role="tablist" aria-label="Map Controls">
+        <li role="presentation">
+          <a href="#home" role="tab" aria-controls="home" title="Toggle Map Layers">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+            <span class="sr-only">Toggle Map Layers</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="leaflet-sidebar-content">
+      <div class="leaflet-sidebar-pane" id="home">
+        <h4>Map Layers</h4>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <button class="btn btn-primary btn-block" id="btn-layer1" title="Activate TD Corregido Layer">TD Corregido</button>
+              <button class="btn btn-primary btn-block" id="btn-layer2" title="Activate Ng Clipped Layer">Ng Clipped</button>
+              <button class="btn btn-primary btn-block" id="btn-layer3" title="Activate N Corregido-1 Layer">N Corregido-1</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- Leaflet Sidebar V2 JS -->
+  <script src="https://unpkg.com/leaflet-sidebar-v2/js/leaflet-sidebar.min.js"></script>
+  <!-- Leaflet Fullscreen JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.0.2/Control.FullScreen.min.js"></script>
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Custom JS -->
+  <script src="src_js/app.js"></script>
+</body>
+</html>

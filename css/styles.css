@@ -1,0 +1,61 @@
+/* styles.css */
+
+/* Estilo de la barra lateral */
+.leaflet-sidebar .leaflet-sidebar-pane {
+    padding: 20px;
+  }
+  
+  .leaflet-sidebar h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .leaflet-sidebar .btn {
+    margin-bottom: 10px;
+  }
+  
+  #sidebar {
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+  }
+  
+  /* Controles personalizados */
+  .leaflet-control-layers-expanded label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin: 5px;
+  }
+  
+  .leaflet-control-layers-expanded input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  /* Map container para ocupar toda la pantalla */
+  html, body, #map {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Personalizar los botones del sidebar */
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+  }
+  
+  /* Estilo para el control de capas */
+  .leaflet-control-layers {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
